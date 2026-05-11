@@ -1,0 +1,218 @@
+[
+  {
+    "ailment": "Ballistic injury (gunshot)",
+    "severity": "critical",
+    "symptoms": [
+      "Small entry and exit wounds masking internal damage",
+      "Uncontrolled internal haemorrhage",
+      "Haemodynamic instability",
+      "Multicavity organ injury",
+      "Pain at wound site",
+      "Possible fractures along bullet path",
+      "Pallor and cold clammy skin"
+    ],
+    "doctors": 3,
+    "nurses": 3,
+    "median_treatment_minutes": 180
+  },
+  {
+    "ailment": "Blast injury",
+    "severity": "critical",
+    "symptoms": [
+      "Traumatic amputation",
+      "Penetrating fragment wounds",
+      "Tympanic membrane rupture",
+      "Haemoptysis",
+      "Haemodynamic shock",
+      "Acute confusion",
+      "Flash burns to exposed skin",
+      "Air embolism signs including stroke and acute abdomen",
+      "Bilateral hearing loss"
+    ],
+    "doctors": 4,
+    "nurses": 4,
+    "median_treatment_minutes": 120
+  },
+  {
+    "ailment": "Crush injury and crush syndrome",
+    "severity": "critical",
+    "symptoms": [
+      "Hypotension on release from entrapment",
+      "Myoglobinuria (dark brown urine)",
+      "Lethal cardiac arrhythmias",
+      "Compartment syndrome",
+      "Hyperkalaemia",
+      "Oliguria progressing to anuria",
+      "Diffuse muscle swelling",
+      "Metabolic acidosis"
+    ],
+    "doctors": 2,
+    "nurses": 2,
+    "median_treatment_minutes": 90
+  },
+  {
+    "ailment": "Terror-related stab injury (TRS)",
+    "severity": "critical",
+    "symptoms": [
+      "Multiple wounds concentrated on head, neck, and upper torso",
+      "Hypotension",
+      "Reduced Glasgow Coma Score",
+      "Airway compromise including stridor and change of voice",
+      "Haemothorax",
+      "Cardiac tamponade signs",
+      "Tension pneumothorax"
+    ],
+    "doctors": 3,
+    "nurses": 3,
+    "median_treatment_minutes": 150
+  },
+  {
+    "ailment": "Primary blast lung injury (PBLI)",
+    "severity": "critical",
+    "symptoms": [
+      "Respiratory distress within 12 hours of blast",
+      "Haemoptysis",
+      "Low oxygen saturation",
+      "Pneumothorax or pneumatoceles on imaging",
+      "Bats-wing consolidation pattern on chest X-ray",
+      "Tachypnoea",
+      "Hypotension from decreased systemic vascular resistance"
+    ],
+    "doctors": 2,
+    "nurses": 2,
+    "median_treatment_minutes": 90
+  },
+  {
+    "ailment": "Traumatic brain injury (TBI)",
+    "severity": "critical",
+    "symptoms": [
+      "Reduced or fluctuating Glasgow Coma Score",
+      "Unequal pupils or pupillary non-reactivity",
+      "Limb weakness or asymmetry",
+      "CSF rhinorrhoea or otorrhoea",
+      "Bilateral periorbital haematoma (raccoon eyes)",
+      "Bruising over mastoid (Battle sign)",
+      "Projectile vomiting",
+      "Seizures",
+      "Bulging fontanelle in infants"
+    ],
+    "doctors": 3,
+    "nurses": 2,
+    "median_treatment_minutes": 240
+  },
+  {
+    "ailment": "Thoracic trauma",
+    "severity": "critical",
+    "symptoms": [
+      "Immediate return of 1.5 litres or more from chest drain",
+      "Ongoing blood loss of 200 ml per hour",
+      "Tension pneumothorax with tracheal deviation",
+      "Cardiac tamponade (Beck triad: hypotension, muffled heart sounds, raised JVP)",
+      "Respiratory failure",
+      "Haemodynamic instability",
+      "Massive air leak compromising ventilation"
+    ],
+    "doctors": 3,
+    "nurses": 3,
+    "median_treatment_minutes": 60
+  },
+  {
+    "ailment": "Abdominal trauma",
+    "severity": "critical",
+    "symptoms": [
+      "Rigid or distended abdomen",
+      "Haemodynamic shock unresponsive to resuscitation",
+      "Evisceration of bowel or omentum",
+      "Signs of hollow viscus perforation",
+      "Rising serum lactate",
+      "Abdominal wall bruising or seatbelt sign",
+      "Blood at urethral meatus"
+    ],
+    "doctors": 3,
+    "nurses": 3,
+    "median_treatment_minutes": 60
+  },
+  {
+    "ailment": "Vascular trauma",
+    "severity": "critical",
+    "symptoms": [
+      "Pulseless cold pale limb",
+      "Rapidly expanding haematoma",
+      "Active pulsatile arterial bleeding",
+      "Palpable thrill or audible bruit",
+      "Neurological deficit distal to injury",
+      "Pallor and mottling",
+      "History of active bleeding at scene"
+    ],
+    "doctors": 3,
+    "nurses": 2,
+    "median_treatment_minutes": 90
+  },
+  {
+    "ailment": "Pelvic and long bone injuries",
+    "severity": "serious",
+    "symptoms": [
+      "Pelvic instability on compression",
+      "Haemodynamic shock",
+      "Visible limb deformity",
+      "Open fractures with exposed bone",
+      "Uncontrolled limb haemorrhage",
+      "Signs of compartment syndrome (pain on passive stretch, paraesthesia, tense compartment)",
+      "Limb shortening or rotation"
+    ],
+    "doctors": 2,
+    "nurses": 2,
+    "median_treatment_minutes": 60
+  },
+  {
+    "ailment": "CBRN nerve agent exposure",
+    "severity": "serious",
+    "symptoms": [
+      "Pinpoint (miotic) pupils",
+      "Excessive bronchial secretions and bronchorrhoea",
+      "Profuse salivation and lacrimation",
+      "Convulsions and seizures",
+      "Bronchospasm and wheeze",
+      "Profound bradycardia",
+      "Urinary and faecal incontinence",
+      "Respiratory paralysis",
+      "Loss of consciousness",
+      "Generalised fasciculations"
+    ],
+    "doctors": 2,
+    "nurses": 2,
+    "median_treatment_minutes": 60
+  },
+  {
+    "ailment": "Burn injury",
+    "severity": "serious",
+    "symptoms": [
+      "Inspiratory stridor indicating airway burn",
+      "Singed nasal hairs and eyebrows",
+      "Soot in mouth, nostrils, or sputum",
+      "Haemodynamic instability",
+      "Circumferential burns causing limb ischaemia",
+      "Elevated carboxyhaemoglobin on co-oximetry",
+      "Blistering, skin loss, and eschar formation",
+      "Hoarseness of voice"
+    ],
+    "doctors": 2,
+    "nurses": 2,
+    "median_treatment_minutes": 60
+  },
+  {
+    "ailment": "Acute acoustic trauma (AAT)",
+    "severity": "moderate",
+    "symptoms": [
+      "Sudden sensorineural hearing loss",
+      "Persistent tinnitus",
+      "Earache or otalgia",
+      "Vertigo or dizziness",
+      "Tympanic membrane perforation",
+      "Feeling of aural fullness"
+    ],
+    "doctors": 1,
+    "nurses": 1,
+    "median_treatment_minutes": 45
+  }
+]

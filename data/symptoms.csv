@@ -1,0 +1,201 @@
+symptom_id,symptom_name,body_system,severity_indicator,present_in_major_incident
+1,Entry and exit gunshot wounds,Integumentary,severe,true
+2,Uncontrolled internal haemorrhage,Cardiovascular,severe,true
+3,Haemodynamic instability,Cardiovascular,severe,true
+4,Multicavity organ injury,Multiple,severe,true
+5,Wound pain,Musculoskeletal,mild,true
+6,Traumatic amputation,Musculoskeletal,severe,true
+7,Penetrating fragment wounds,Integumentary,severe,true
+8,Tympanic membrane rupture,ENT,moderate,true
+9,Haemoptysis,Respiratory,severe,true
+10,Haemodynamic shock,Cardiovascular,severe,true
+11,Acute confusion,Neurological,moderate,true
+12,Flash burns to exposed skin,Integumentary,severe,true
+13,Air embolism,Cardiovascular,severe,true
+14,Hypotension on release from entrapment,Cardiovascular,severe,true
+15,Myoglobinuria (dark brown urine),Renal,severe,true
+16,Lethal cardiac arrhythmias,Cardiovascular,severe,true
+17,Compartment syndrome,Musculoskeletal,severe,true
+18,Hyperkalaemia,Metabolic,severe,true
+19,Oliguria,Renal,severe,true
+20,Diffuse muscle swelling,Musculoskeletal,moderate,true
+21,Metabolic acidosis,Metabolic,severe,true
+22,Multiple penetrating wounds to head and neck,Integumentary,severe,true
+23,Airway compromise,Respiratory,severe,true
+24,Haemothorax,Respiratory,severe,true
+25,Cardiac tamponade,Cardiovascular,severe,true
+26,Respiratory distress,Respiratory,severe,true
+27,Low oxygen saturation,Respiratory,severe,true
+28,Pneumothorax,Respiratory,severe,true
+29,Reduced Glasgow Coma Score,Neurological,severe,true
+30,Unequal pupils (anisocoria),Neurological,severe,true
+31,Limb weakness or asymmetry,Neurological,severe,true
+32,CSF rhinorrhoea,Neurological,severe,true
+33,Bilateral periorbital haematoma (raccoon eyes),Neurological,severe,true
+34,Mastoid bruising (Battle sign),Neurological,severe,true
+35,Projectile vomiting,Gastrointestinal,severe,true
+36,Seizures,Neurological,severe,true
+37,Tension pneumothorax with tracheal deviation,Respiratory,severe,true
+38,Respiratory failure,Respiratory,severe,true
+39,Massive air leak,Respiratory,severe,true
+40,Rigid or distended abdomen,Gastrointestinal,severe,true
+41,Evisceration of bowel or omentum,Gastrointestinal,severe,true
+42,Rising serum lactate,Metabolic,severe,true
+43,Abdominal wall bruising,Integumentary,moderate,true
+44,Pulseless cold pale limb,Vascular,severe,true
+45,Expanding haematoma,Vascular,severe,true
+46,Pulsatile active arterial bleeding,Vascular,severe,true
+47,Palpable bruit over vessel,Vascular,severe,true
+48,Neurological deficit distal to injury,Neurological,severe,true
+49,Skin pallor and mottling,Vascular,moderate,true
+50,Pelvic instability on compression,Musculoskeletal,severe,true
+51,Limb deformity,Musculoskeletal,moderate,true
+52,Open fracture with exposed bone,Musculoskeletal,severe,true
+53,Pinpoint miotic pupils,Neurological,severe,true
+54,Excessive bronchial secretions and bronchorrhoea,Respiratory,severe,true
+55,Profuse salivation and lacrimation,Neurological,severe,true
+56,Convulsions,Neurological,severe,true
+57,Bronchospasm and wheeze,Respiratory,severe,true
+58,Profound bradycardia,Cardiovascular,severe,true
+59,Urinary and faecal incontinence,Genitourinary,moderate,true
+60,Respiratory paralysis,Respiratory,severe,true
+61,Loss of consciousness,Neurological,severe,true
+62,Generalised muscle fasciculations,Neurological,severe,true
+63,Inspiratory stridor,Respiratory,severe,true
+64,Singed nasal hairs and eyebrows,Integumentary,moderate,true
+65,Soot in mouth or sputum,Respiratory,moderate,true
+66,Circumferential burns causing limb ischaemia,Integumentary,severe,true
+67,Elevated carboxyhaemoglobin,Haematological,severe,true
+68,Blistering and skin loss,Integumentary,severe,true
+69,Hoarseness of voice,ENT,moderate,true
+70,Sudden sensorineural hearing loss,ENT,moderate,true
+71,Persistent tinnitus,ENT,mild,true
+72,Earache or otalgia,ENT,mild,true
+73,Vertigo,ENT,moderate,true
+74,Feeling of aural fullness,ENT,mild,true
+75,Runny nose (rhinorrhoea),Respiratory,mild,false
+76,Nasal congestion,Respiratory,mild,false
+77,Sneezing,Respiratory,mild,false
+78,Sore throat,ENT,mild,false
+79,Mild dry cough,Respiratory,mild,false
+80,Low-grade fever (below 38.5 C),Constitutional,mild,false
+81,General fatigue,Constitutional,mild,false
+82,Mild headache,Neurological,mild,false
+83,Sudden high fever (above 38.5 C),Constitutional,moderate,false
+84,Severe myalgia and body aches,Musculoskeletal,moderate,false
+85,Chills and rigors,Constitutional,moderate,false
+86,Extreme fatigue,Constitutional,moderate,false
+87,Loss of appetite (anorexia),Gastrointestinal,mild,false
+88,Persistent productive cough (more than 3 weeks),Respiratory,moderate,false
+89,Night sweats,Constitutional,moderate,false
+90,Unexplained weight loss,Constitutional,moderate,false
+91,Low-grade evening fever,Constitutional,mild,false
+92,Pleuritic chest pain,Respiratory,moderate,false
+93,Green or rust-coloured purulent sputum,Respiratory,moderate,false
+94,Dyspnoea at rest,Respiratory,moderate,false
+95,Tachypnoea,Respiratory,moderate,false
+96,Dullness to percussion on auscultation,Respiratory,moderate,false
+97,Central abdominal pain migrating to right iliac fossa,Gastrointestinal,moderate,false
+98,Rebound tenderness at McBurney point,Gastrointestinal,moderate,false
+99,Rovsing sign positive,Gastrointestinal,moderate,false
+100,Abdominal guarding and rigidity,Gastrointestinal,moderate,false
+101,Dysuria (painful urination),Genitourinary,mild,false
+102,Urinary frequency and urgency,Genitourinary,mild,false
+103,Suprapubic discomfort,Genitourinary,mild,false
+104,Cloudy or foul-smelling urine,Genitourinary,mild,false
+105,Haematuria,Genitourinary,mild,false
+106,Nocturia,Genitourinary,mild,false
+107,Unilateral throbbing headache,Neurological,moderate,false
+108,Visual aura (scotoma or fortification spectra),Neurological,moderate,false
+109,Photophobia,Neurological,moderate,false
+110,Phonophobia,Neurological,moderate,false
+111,Sensory disturbance including tingling and numbness,Neurological,mild,false
+112,Wrist pain after fall on outstretched hand,Musculoskeletal,mild,false
+113,Dinner fork wrist deformity,Musculoskeletal,mild,false
+114,Localised joint swelling and bruising,Musculoskeletal,mild,false
+115,Crepitus on movement,Musculoskeletal,mild,false
+116,Chest tightness,Respiratory,moderate,false
+117,Reduced peak expiratory flow,Respiratory,moderate,false
+118,Accessory muscle use during breathing,Respiratory,moderate,false
+119,Generalised urticaria (hives),Immunological,moderate,false
+120,Angioedema of lips tongue or throat,Immunological,severe,false
+121,Hypotension,Cardiovascular,severe,false
+122,Tachycardia,Cardiovascular,moderate,false
+123,Sense of impending doom,Psychiatric,moderate,false
+124,Watery non-bloody diarrhoea,Gastrointestinal,mild,false
+125,Cramping abdominal pain,Gastrointestinal,mild,false
+126,Dehydration signs including dry mucous membranes,Constitutional,moderate,false
+127,Severe headache (worst of life),Neurological,severe,false
+128,Blurred or double vision (diplopia),Neurological,moderate,false
+129,Epistaxis (nosebleed),ENT,mild,false
+130,Tremor and shakiness,Neurological,moderate,false
+131,Diaphoresis (excessive sweating),Constitutional,moderate,false
+132,Palpitations,Cardiovascular,mild,false
+133,Hunger with associated weakness,Constitutional,mild,false
+134,Post-traumatic amnesia,Neurological,moderate,false
+135,Dizziness and balance problems,Neurological,mild,false
+136,Feeling foggy or cognitively slowed,Neurological,mild,false
+137,Sleep disturbance,Neurological,mild,false
+138,Wound gaping unable to close with direct pressure,Integumentary,mild,false
+139,Active external bleeding,Vascular,mild,false
+140,Dry persistent cough,Respiratory,mild,false
+141,Loss of taste (ageusia),Neurological,mild,false
+142,Loss of smell (anosmia),Neurological,mild,false
+143,Shortness of breath on exertion,Respiratory,mild,false
+144,Sudden severe joint pain in first metatarsophalangeal joint,Musculoskeletal,moderate,false
+145,Intense joint erythema and warmth,Musculoskeletal,moderate,false
+146,Tophi visible under skin,Musculoskeletal,mild,false
+147,Itchy vesicular rash in successive crops,Integumentary,mild,false
+148,Rash progressing from macules to vesicles to crusts,Integumentary,mild,false
+149,Lateral ankle pain after inversion injury,Musculoskeletal,mild,false
+150,Reduced range of movement at ankle,Musculoskeletal,mild,false
+151,Pallor of conjunctivae and mucous membranes,Haematological,mild,false
+152,Cold intolerance,Constitutional,mild,false
+153,Koilonychia (spoon-shaped nails),Integumentary,mild,false
+154,Angular stomatitis,Integumentary,mild,false
+155,Pica (craving non-food substances),Psychiatric,mild,false
+156,Neck stiffness (nuchal rigidity),Neurological,severe,false
+157,Petechial or purpuric rash,Integumentary,severe,false
+158,Photophobia with fever and neck stiffness,Neurological,severe,false
+159,Jaundice (scleral icterus),Hepatic,moderate,false
+160,Right upper quadrant pain,Gastrointestinal,moderate,false
+161,Clay-coloured stool,Gastrointestinal,moderate,false
+162,Dark tea-coloured urine (conjugated bilirubin),Renal,moderate,false
+163,Polydipsia (excessive thirst),Endocrine,moderate,false
+164,Polyuria (excessive urination),Endocrine,moderate,false
+165,Polyphagia (excessive hunger),Endocrine,mild,false
+166,Pruritus (generalised itching),Integumentary,mild,false
+167,Ankle or leg oedema,Cardiovascular,moderate,false
+168,Orthopnoea (breathlessness lying flat),Cardiovascular,moderate,false
+169,Paroxysmal nocturnal dyspnoea,Cardiovascular,severe,false
+170,Cyanosis,Respiratory,severe,false
+171,Haematemesis (vomiting blood),Gastrointestinal,severe,false
+172,Melaena (black tarry stool),Gastrointestinal,severe,false
+173,Flank pain radiating to groin,Genitourinary,severe,false
+174,Dysarthria (slurred speech),Neurological,severe,false
+175,Facial drooping,Neurological,severe,false
+176,Sudden unilateral arm weakness,Neurological,severe,false
+177,Ataxia (loss of coordination),Neurological,moderate,false
+178,Paraesthesia (pins and needles),Neurological,mild,false
+179,Back pain radiating down leg (sciatica),Musculoskeletal,moderate,false
+180,Constipation,Gastrointestinal,mild,false
+181,Rectal bleeding,Gastrointestinal,moderate,false
+182,Dysphagia (difficulty swallowing),Gastrointestinal,moderate,false
+183,Odynophagia (painful swallowing),Gastrointestinal,mild,false
+184,Heartburn and acid regurgitation,Gastrointestinal,mild,false
+185,Bloating,Gastrointestinal,mild,false
+186,Chest pain radiating to left arm or jaw,Cardiovascular,severe,false
+187,Sweating with chest pain,Cardiovascular,severe,false
+188,Syncope (transient loss of consciousness),Cardiovascular,moderate,false
+189,Pre-syncope and light-headedness,Cardiovascular,mild,false
+190,Intermittent claudication,Vascular,moderate,false
+191,Rest pain in foot,Vascular,severe,false
+192,Skin ulceration on lower limb,Vascular,moderate,false
+193,Lymphadenopathy (enlarged lymph nodes),Immunological,moderate,false
+194,Splenomegaly,Haematological,moderate,false
+195,Easy bruising,Haematological,mild,false
+196,Prolonged bleeding from minor cuts,Haematological,moderate,false
+197,Bone pain,Musculoskeletal,moderate,false
+198,Pathological fracture,Musculoskeletal,severe,false
+199,Hot tender swollen joint,Musculoskeletal,moderate,false
+200,Morning joint stiffness lasting more than one hour,Musculoskeletal,moderate,false

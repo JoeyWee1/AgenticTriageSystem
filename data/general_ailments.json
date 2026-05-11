@@ -1,0 +1,371 @@
+[
+  {
+    "ailment": "Common cold (viral rhinitis)",
+    "severity": "mild",
+    "icd10": "J00",
+    "symptoms": [
+      "Runny nose",
+      "Nasal congestion",
+      "Sneezing",
+      "Sore throat",
+      "Mild dry cough",
+      "Low-grade fever (below 38.5 C)",
+      "General fatigue",
+      "Mild headache"
+    ],
+    "doctors": 0,
+    "nurses": 0,
+    "median_treatment_minutes": 15,
+    "notes": "Self-limiting; resolves in 7 to 10 days; GP consult only if complications develop"
+  },
+  {
+    "ailment": "Influenza (seasonal flu)",
+    "severity": "mild",
+    "icd10": "J11.1",
+    "symptoms": [
+      "Sudden high fever (above 38.5 C)",
+      "Severe myalgia and body aches",
+      "Dry persistent cough",
+      "Headache",
+      "Chills and rigors",
+      "Extreme fatigue",
+      "Loss of appetite",
+      "Sore throat"
+    ],
+    "doctors": 1,
+    "nurses": 0,
+    "median_treatment_minutes": 20,
+    "notes": "Antivirals (oseltamivir) most effective within 48 hours of symptom onset; high-risk groups prioritised"
+  },
+  {
+    "ailment": "Pulmonary tuberculosis",
+    "severity": "moderate",
+    "icd10": "A15.0",
+    "symptoms": [
+      "Persistent productive cough lasting more than 3 weeks",
+      "Night sweats",
+      "Unexplained weight loss",
+      "Low-grade evening fever",
+      "Haemoptysis",
+      "Chest pain",
+      "Profound fatigue",
+      "Anorexia"
+    ],
+    "doctors": 1,
+    "nurses": 1,
+    "median_treatment_minutes": 30,
+    "notes": "Initial consult 30 min; full treatment course is 6 months of combination antibiotics (RIPE regimen)"
+  },
+  {
+    "ailment": "Community-acquired pneumonia",
+    "severity": "moderate",
+    "icd10": "J18.9",
+    "symptoms": [
+      "Productive cough with green or rust-coloured sputum",
+      "Fever and rigors",
+      "Pleuritic chest pain",
+      "Dyspnoea",
+      "Tachypnoea",
+      "Low oxygen saturation",
+      "Fatigue and malaise",
+      "Dullness to percussion on affected side"
+    ],
+    "doctors": 1,
+    "nurses": 1,
+    "median_treatment_minutes": 45,
+    "notes": "CURB-65 score determines admission; treatment 5 to 7 days antibiotics"
+  },
+  {
+    "ailment": "Acute appendicitis",
+    "severity": "moderate",
+    "icd10": "K35.8",
+    "symptoms": [
+      "Central colicky abdominal pain migrating to right iliac fossa",
+      "Low-grade fever",
+      "Nausea and vomiting",
+      "Anorexia",
+      "Rebound tenderness at McBurney point",
+      "Rovsing sign",
+      "Guarding and rigidity",
+      "Raised white cell count"
+    ],
+    "doctors": 2,
+    "nurses": 2,
+    "median_treatment_minutes": 75,
+    "notes": "Laparoscopic appendicectomy is standard; perforation risk increases with delay beyond 24 hours"
+  },
+  {
+    "ailment": "Urinary tract infection (lower)",
+    "severity": "mild",
+    "icd10": "N39.0",
+    "symptoms": [
+      "Dysuria (painful urination)",
+      "Urinary frequency and urgency",
+      "Suprapubic discomfort or pain",
+      "Cloudy or foul-smelling urine",
+      "Haematuria",
+      "Low-grade fever",
+      "Nocturia"
+    ],
+    "doctors": 1,
+    "nurses": 0,
+    "median_treatment_minutes": 15,
+    "notes": "3 to 7 day antibiotic course; urine dipstick and MSU culture to guide treatment"
+  },
+  {
+    "ailment": "Migraine with aura",
+    "severity": "mild",
+    "icd10": "G43.1",
+    "symptoms": [
+      "Unilateral throbbing headache",
+      "Visual aura (scotoma, fortification spectra, photopsia)",
+      "Nausea and vomiting",
+      "Photophobia",
+      "Phonophobia",
+      "Sensory disturbance (tingling, numbness)",
+      "Prodrome of mood and appetite changes"
+    ],
+    "doctors": 1,
+    "nurses": 0,
+    "median_treatment_minutes": 30,
+    "notes": "Triptans are first-line acute treatment; assess for red flag headache features"
+  },
+  {
+    "ailment": "Colles fracture (distal radius fracture)",
+    "severity": "mild",
+    "icd10": "S52.5",
+    "symptoms": [
+      "Wrist pain after fall on outstretched hand",
+      "Dinner fork deformity of wrist",
+      "Localised swelling and bruising",
+      "Tenderness over distal radius",
+      "Restricted range of movement",
+      "Crepitus on movement"
+    ],
+    "doctors": 1,
+    "nurses": 1,
+    "median_treatment_minutes": 60,
+    "notes": "Reduction under Bier block or haematoma block; backslab cast for 6 weeks; surgery if displaced"
+  },
+  {
+    "ailment": "Acute asthma exacerbation (mild to moderate)",
+    "severity": "moderate",
+    "icd10": "J45.1",
+    "symptoms": [
+      "Wheeze",
+      "Chest tightness",
+      "Shortness of breath",
+      "Cough especially nocturnal",
+      "Reduced peak expiratory flow",
+      "Tachypnoea",
+      "Accessory muscle use",
+      "Reduced oxygen saturation"
+    ],
+    "doctors": 1,
+    "nurses": 1,
+    "median_treatment_minutes": 45,
+    "notes": "Salbutamol nebulisation and systemic steroids are mainstay; reassess PEFR every 15 to 30 minutes"
+  },
+  {
+    "ailment": "Anaphylaxis (mild to moderate)",
+    "severity": "moderate",
+    "icd10": "T78.2",
+    "symptoms": [
+      "Urticaria and generalised flushing",
+      "Angioedema of lips, tongue, or throat",
+      "Stridor",
+      "Wheeze",
+      "Hypotension",
+      "Tachycardia",
+      "Nausea and vomiting",
+      "Sense of impending doom"
+    ],
+    "doctors": 1,
+    "nurses": 1,
+    "median_treatment_minutes": 45,
+    "notes": "Intramuscular adrenaline 0.5 mg is first-line; observe minimum 6 hours post-reaction"
+  },
+  {
+    "ailment": "Gastroenteritis (viral)",
+    "severity": "mild",
+    "icd10": "A09",
+    "symptoms": [
+      "Watery non-bloody diarrhoea",
+      "Nausea and vomiting",
+      "Cramping abdominal pain",
+      "Low-grade fever",
+      "Fatigue",
+      "Dehydration signs",
+      "Loss of appetite"
+    ],
+    "doctors": 0,
+    "nurses": 0,
+    "median_treatment_minutes": 20,
+    "notes": "Oral rehydration solution; most resolve in 48 to 72 hours; GP if symptoms persist beyond 5 days"
+  },
+  {
+    "ailment": "Hypertensive crisis",
+    "severity": "moderate",
+    "icd10": "I16",
+    "symptoms": [
+      "Severe headache (worst of life)",
+      "Blurred or double vision",
+      "Nausea and vomiting",
+      "Chest pain",
+      "Shortness of breath",
+      "Reduced level of consciousness",
+      "Epistaxis",
+      "Systolic blood pressure above 180 mmHg"
+    ],
+    "doctors": 2,
+    "nurses": 1,
+    "median_treatment_minutes": 90,
+    "notes": "Gradual blood pressure reduction over hours; avoid rapid drop which risks cerebral ischaemia"
+  },
+  {
+    "ailment": "Hypoglycaemia",
+    "severity": "moderate",
+    "icd10": "E16.0",
+    "symptoms": [
+      "Tremor and shakiness",
+      "Diaphoresis",
+      "Pallor",
+      "Tachycardia and palpitations",
+      "Confusion and altered behaviour",
+      "Hunger",
+      "Diplopia or blurred vision",
+      "Loss of consciousness if severe"
+    ],
+    "doctors": 1,
+    "nurses": 1,
+    "median_treatment_minutes": 30,
+    "notes": "Oral glucose if conscious; IV dextrose or glucagon IM if unconscious; blood glucose target above 4.0 mmol/L"
+  },
+  {
+    "ailment": "Mild concussion (mild TBI)",
+    "severity": "mild",
+    "icd10": "S06.0",
+    "symptoms": [
+      "Brief loss of consciousness or confusion",
+      "Post-traumatic amnesia",
+      "Headache",
+      "Dizziness and balance problems",
+      "Nausea",
+      "Sensitivity to light and noise",
+      "Feeling foggy or slowed down",
+      "Sleep disturbance"
+    ],
+    "doctors": 1,
+    "nurses": 1,
+    "median_treatment_minutes": 45,
+    "notes": "CT head if GCS falls or red flag features; graduated return-to-activity protocol over minimum 6 days"
+  },
+  {
+    "ailment": "Laceration requiring sutures",
+    "severity": "mild",
+    "icd10": "T14.1",
+    "symptoms": [
+      "Full thickness skin wound",
+      "Active bleeding",
+      "Wound gaping or unable to close with pressure",
+      "Pain at wound site",
+      "Swelling and bruising around wound",
+      "Risk of tendon or nerve involvement if deep"
+    ],
+    "doctors": 1,
+    "nurses": 1,
+    "median_treatment_minutes": 45,
+    "notes": "Clean wound, assess depth, suture or tissue glue; tetanus prophylaxis if needed; review at 5 to 10 days"
+  },
+  {
+    "ailment": "COVID-19 (mild to moderate)",
+    "severity": "mild",
+    "icd10": "U07.1",
+    "symptoms": [
+      "Fever",
+      "Dry persistent cough",
+      "Fatigue",
+      "Loss of taste (ageusia)",
+      "Loss of smell (anosmia)",
+      "Sore throat",
+      "Headache",
+      "Myalgia",
+      "Shortness of breath on exertion"
+    ],
+    "doctors": 1,
+    "nurses": 0,
+    "median_treatment_minutes": 20,
+    "notes": "Supportive management for mild cases; antivirals (nirmatrelvir/ritonavir) for high-risk individuals within 5 days of onset"
+  },
+  {
+    "ailment": "Gout (acute attack)",
+    "severity": "mild",
+    "icd10": "M10.0",
+    "symptoms": [
+      "Sudden onset severe joint pain typically in first metatarsophalangeal joint",
+      "Intense swelling and erythema",
+      "Warmth over affected joint",
+      "Joint tenderness (unable to bear weight)",
+      "Possible tophi visible under skin",
+      "Raised serum uric acid"
+    ],
+    "doctors": 1,
+    "nurses": 0,
+    "median_treatment_minutes": 20,
+    "notes": "NSAIDs, colchicine, or corticosteroids for acute attack; urate-lowering therapy between attacks"
+  },
+  {
+    "ailment": "Chickenpox (varicella)",
+    "severity": "mild",
+    "icd10": "B01.9",
+    "symptoms": [
+      "Itchy vesicular rash in successive crops",
+      "Mild fever",
+      "Malaise and fatigue",
+      "Headache",
+      "Anorexia",
+      "Rash progressing from macules to papules to vesicles to crusts",
+      "Rash appearing first on trunk then face and limbs"
+    ],
+    "doctors": 0,
+    "nurses": 0,
+    "median_treatment_minutes": 15,
+    "notes": "Self-limiting; calamine lotion and antihistamines for itch; aciclovir for immunocompromised patients"
+  },
+  {
+    "ailment": "Sprained ankle (lateral ligament)",
+    "severity": "mild",
+    "icd10": "S93.4",
+    "symptoms": [
+      "Pain on lateral aspect of ankle after inversion injury",
+      "Swelling",
+      "Bruising",
+      "Tenderness over anterior talofibular ligament",
+      "Reduced range of movement",
+      "Difficulty weight-bearing"
+    ],
+    "doctors": 0,
+    "nurses": 1,
+    "median_treatment_minutes": 25,
+    "notes": "Ottawa ankle rules to exclude fracture; RICE protocol for first 48 hours; physiotherapy if grade 2 or 3"
+  },
+  {
+    "ailment": "Iron deficiency anaemia",
+    "severity": "mild",
+    "icd10": "D50.9",
+    "symptoms": [
+      "Fatigue and weakness",
+      "Pallor of conjunctivae and mucous membranes",
+      "Shortness of breath on exertion",
+      "Palpitations",
+      "Cold intolerance",
+      "Koilonychia (spoon nails)",
+      "Angular stomatitis",
+      "Pica (craving non-food substances)"
+    ],
+    "doctors": 1,
+    "nurses": 0,
+    "median_treatment_minutes": 20,
+    "notes": "Oral iron supplementation for 3 to 6 months; investigate underlying cause especially GI blood loss"
+  }
+]
