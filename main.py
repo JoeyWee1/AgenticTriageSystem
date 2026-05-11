@@ -1,9 +1,10 @@
 import numpy as np
 from scipy.stats import poisson
+from tqdm import tqdm
 from generate_patient import gen_patient
 from agentic import agentic_decision
 
-hours = 1
+hours = 24
 simulation_len = hours * 60  # in minutes
 patients_per_min = poisson.rvs(mu=0.3, size=simulation_len)  # approx 0.3 patients per minute at Charing Cross Hospital
 
@@ -27,7 +28,7 @@ patient_log = []
 # Unallocated patient queue: list of dicts with arrival info
 waiting_queue = []
 
-for current_min, patients_this_min in enumerate(patients_per_min):
+for current_min, patients_this_min in tqdm(enumerate(patients_per_min), total=simulation_len, desc="Simulating", unit="min"):
     # Release staff who finish at or before this minute
     still_busy = []
     for (finish_min, staff_type) in active_treatments:

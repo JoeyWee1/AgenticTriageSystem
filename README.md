@@ -49,7 +49,7 @@ source venv/bin/activate
 ### 3. Install dependencies
 
 ```bash
-pip install langchain-openai langchain-core numpy scipy
+pip install langchain-openai langchain-core numpy scipy tqdm
 ```
 
 ### 4. Set your OpenAI API key
