@@ -129,8 +129,11 @@ def _sample_vitals(ailment_severity):
     }
 
 
-def gen_patient():
+def gen_patient(major_only=False):
     """Generate a simulated A&E patient.
+
+    Args:
+        major_only: if True, always draw from major incident ailments (used for MCE patients).
 
     Returns:
         (description, ailment_dict) where description is a natural-language
@@ -144,7 +147,7 @@ def gen_patient():
     history = random.choice(_HISTORIES)
     arrival_mode = random.choices(list(_ARRIVAL_MODES.keys()), weights=[0.45, 0.30, 0.15, 0.05, 0.05])[0]
 
-    ailment = random.choice(_GENERAL) if random.random() < 0.85 else random.choice(_MAJOR)
+    ailment = random.choice(_MAJOR) if (major_only or random.random() >= 0.85) else random.choice(_GENERAL)
     severity = ailment.get("severity", "mild")
     vitals = _sample_vitals(severity)
 

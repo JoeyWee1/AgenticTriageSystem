@@ -1,5 +1,6 @@
 import json
 import re
+from tqdm import tqdm
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage
 
@@ -10,6 +11,10 @@ def _get_llm():
     if _llm is None:
         _llm = ChatOpenAI(model="gpt-4o-mini", max_tokens=600)
     return _llm
+
+
+def _log(msg):
+    tqdm.write(msg)
 
 
 def _parse_json(text):
@@ -48,8 +53,14 @@ def _severity_agent(patient_prompt, current_order):
     if needs not in ("doctor", "nurse"):
         needs = "doctor"
     warning = result.get("language_warning")
+
+    _log("  ┌─ [1] SEVERITY AGENT ─────────────────────────────")
+    _log(f"  │  ESI score  : {esi} / 5")
+    _log(f"  │  Description: {description}")
+    _log(f"  │  Needs      : {needs}")
     if warning:
-        print(f"  [Severity Agent] {warning}")
+        _log(f"  │  ⚠ {warning}")
+    _log("  └──────────────────────────────────────────────────")
 
     return esi, description, needs
 
@@ -63,7 +74,13 @@ def _time_agent(esi, description):
     user = f"ESI: {esi}\nCondition: {description}\nOutput JSON only."
 
     result = _parse_json(_get_llm().invoke([SystemMessage(content=system), HumanMessage(content=user)]).content)
-    return float(result.get("treatment_minutes", 30.0))
+    minutes = float(result.get("treatment_minutes", 30.0))
+
+    _log("  ┌─ [2] TIME ESTIMATION AGENT ──────────────────────")
+    _log(f"  │  Estimated treatment time: {minutes:.0f} min")
+    _log("  └──────────────────────────────────────────────────")
+
+    return minutes
 
 
 def _capacity_agent(queue_len, treatment_minutes, tot_doctors, a_doctors, tot_nurses, a_nurses):
@@ -94,7 +111,7 @@ def _capacity_agent(queue_len, treatment_minutes, tot_doctors, a_doctors, tot_nu
     else:
         flow = "Critical"
 
-    return {
+    capacity = {
         "bor": round(bor, 1),
         "sor": round(sor, 1),
         "post_bor": round(post_bor, 1),
@@ -103,6 +120,19 @@ def _capacity_agent(queue_len, treatment_minutes, tot_doctors, a_doctors, tot_nu
         "flags": flags,
         "can_absorb_cat1": buffer_variance > 0,
     }
+
+    _log("  ┌─ [3] CAPACITY AGENT ─────────────────────────────")
+    _log(f"  │  Bed Occupancy Rate (BOR) : {bor:.1f}%  →  post-admit: {post_bor:.1f}%")
+    _log(f"  │  Staff Occupancy Rate     : {sor:.1f}%")
+    _log(f"  │  Safety Buffer Variance   : {buffer_variance:.1f} beds")
+    _log(f"  │  Flow Status              : {flow}")
+    _log(f"  │  Can absorb Cat-1 emerg.  : {'Yes' if capacity['can_absorb_cat1'] else 'No'}")
+    if flags:
+        for flag in flags:
+            _log(f"  │  ⚠ {flag}")
+    _log("  └──────────────────────────────────────────────────")
+
+    return capacity
 
 
 def _triage_agent(esi, description, capacity):
@@ -122,7 +152,14 @@ def _triage_agent(esi, description, capacity):
     if not capacity["can_absorb_cat1"] and esi <= 2:
         action += " | *** IMMEDIATE TRANSFER ALERT ***"
 
-    return {"track": track, "action": action}
+    triage = {"track": track, "action": action}
+
+    _log("  ┌─ [4] TRIAGE AGENT ───────────────────────────────")
+    _log(f"  │  Track : {track}")
+    _log(f"  │  Action: {action}")
+    _log("  └──────────────────────────────────────────────────")
+
+    return triage
 
 
 def _summary_agent(patient_prompt, esi, description, treatment_minutes, capacity, triage):
@@ -140,7 +177,27 @@ def _summary_agent(patient_prompt, esi, description, treatment_minutes, capacity
         f"Track: {triage['track']} | Action: {triage['action']}\n"
         f"Output JSON only."
     )
-    return _parse_json(_get_llm().invoke([SystemMessage(content=system), HumanMessage(content=user)]).content)
+    result = _parse_json(_get_llm().invoke([SystemMessage(content=system), HumanMessage(content=user)]).content)
+
+    nr = result.get("nurse_report", {})
+    pr = result.get("patient_report", {})
+
+    _log("  ┌─ [5] SUMMARY AGENT ──────────────────────────────")
+    _log("  │  -- Nurse / Medical Student Report --")
+    if nr:
+        _log(f"  │  Condition        : {nr.get('patient_condition', 'N/A')}")
+        _log(f"  │  Treatment time   : {nr.get('estimated_treatment_time', 'N/A')}")
+        _log(f"  │  Hospital capacity: {nr.get('hospital_capacity_status', 'N/A')}")
+        _log(f"  │  Triage rationale : {nr.get('triage_rationale', 'N/A')}")
+        _log(f"  │  Triage decision  : {nr.get('triage_decision', 'N/A')}")
+    _log("  │  -- Patient Report --")
+    if pr:
+        _log(f"  │  Condition summary: {pr.get('condition_summary', 'N/A')}")
+        _log(f"  │  Estimated wait   : {pr.get('estimated_wait', 'N/A')}")
+        _log(f"  │  Queue note       : {pr.get('queue_position_note', 'N/A')}")
+    _log("  └──────────────────────────────────────────────────")
+
+    return result
 
 
 def _review_agent(patient_prompt, esi, triage, capacity):
@@ -160,6 +217,12 @@ def _review_agent(patient_prompt, esi, triage, capacity):
     result = _parse_json(_get_llm().invoke([SystemMessage(content=system), HumanMessage(content=user)]).content)
     confidence = max(1, min(3, int(result.get("confidence", 2))))
     reason = result.get("reason", "Assessment complete.")
+
+    _log("  ┌─ [6] REVIEW AGENT ───────────────────────────────")
+    _log(f"  │  Confidence: {confidence} / 3  ({'Not confident' if confidence == 1 else 'Moderate' if confidence == 2 else 'Confident'})")
+    _log(f"  │  Reason    : {reason}")
+    _log("  └──────────────────────────────────────────────────")
+
     return confidence, reason
 
 
@@ -189,25 +252,12 @@ def agentic_decision(current_order, patient_prompt,
         summary = _summary_agent(patient_prompt, esi, description, treatment_minutes, capacity, triage)
         confidence, reason = _review_agent(patient_prompt, esi, triage, capacity)
 
-        if capacity["flags"]:
-            print(f"  [Capacity] {' | '.join(capacity['flags'])}")
-
         if confidence == 3 or attempt == max_retries:
             if attempt == max_retries and confidence < 3:
-                print(f"  [ESCALATE] Human judgement required — {reason}")
+                _log(f"  *** ESCALATE: Human judgement required — {reason} ***")
             break
 
-        print(f"  [Review loop {attempt + 1}] Confidence {confidence}/3: {reason} — retrying...")
-
-    nurse_report = summary.get("nurse_report", {})
-    patient_report = summary.get("patient_report", {})
-    if nurse_report:
-        print(f"  [Triage] ESI {esi} | {triage['track']} | {triage['action']}")
-    if patient_report:
-        cond = patient_report.get("condition_summary", "")
-        wait = patient_report.get("estimated_wait", "")
-        if cond:
-            print(f"  [Patient report] {cond} | Est. wait: {wait}")
+        _log(f"  [Review loop {attempt + 1}] Confidence {confidence}/3 — retrying pipeline...")
 
     new_patient = (esi, description)
     new_order = sorted(list(current_order) + [new_patient], key=lambda x: x[0])
