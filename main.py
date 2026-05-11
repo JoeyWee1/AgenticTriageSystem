@@ -126,12 +126,12 @@ _MCE_BY_NAME = {e["name"].lower(): e for e in MCE_TYPES}
 # Simulation parameters
 # ---------------------------------------------------------------------------
 
-hours = 2
+hours = 4
 simulation_len = hours * 60  # minutes
 patients_per_min = poisson.rvs(mu=0.3, size=simulation_len)
 
-tot_doctors = 5
-tot_nurses = 10
+tot_doctors = 10
+tot_nurses = 20
 
 # ---------------------------------------------------------------------------
 # CLI — force MCE events at specific minutes
