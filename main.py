@@ -1,4 +1,6 @@
 import argparse
+import heapq
+import datetime
 import random
 import numpy as np
 import matplotlib.pyplot as plt
@@ -237,10 +239,11 @@ current_order = []      # sorted list of (esi, clinical_description) for agent c
 a_doctors = 5
 a_nurses = 10
 
-active_treatments = []  # (finish_minute, staff_type)
-patient_log = []        # one dict per patient
-waiting_queue = []      # unallocated patients
-mce_events_log = []     # (minute, name, n_patients) for plotting
+active_treatments = []       # (finish_minute, staff_type)
+patient_log = []             # one dict per patient
+waiting_queue = []           # unallocated patients
+mce_events_log = []          # (minute, name, n_patients) for plotting
+queue_length_over_time = []  # queue size at end of each minute
 
 # ---------------------------------------------------------------------------
 # Main simulation loop
@@ -373,6 +376,7 @@ for current_min, patients_this_min in tqdm(
             still_waiting.append(patient)
 
     waiting_queue = still_waiting
+    queue_length_over_time.append(len(waiting_queue))
 
 # Patients still in queue at end: wait = time remaining from arrival
 for patient in waiting_queue:
@@ -417,8 +421,69 @@ for esi in sorted(esi_groups):
     print(f"  ESI {esi}: n={len(w):3d} | median {np.median(w):.1f} min | max {w.max():.1f} min")
 
 # ---------------------------------------------------------------------------
+# Queue clearance estimate
+# ---------------------------------------------------------------------------
+
+def _estimate_clearance(waiting_queue, a_doctors, a_nurses, active_treatments, sim_end):
+    """Simulate draining the queue with no new arrivals.
+
+    Accounts for staff currently mid-treatment by seeding the heaps with
+    their remaining busy time. Returns (sorted allocation offsets, total minutes
+    to clear) where offsets are minutes after sim_end when each patient is seen.
+    """
+    queue = sorted(waiting_queue, key=lambda p: (p["esi"], p["arrival_min"]))
+
+    # Seed heaps with currently free staff (offset 0) and busy staff
+    doc_heap = [0] * a_doctors
+    nrs_heap = [0] * a_nurses
+    for finish_min, staff_type in active_treatments:
+        offset = max(0, finish_min - sim_end)
+        if staff_type == "doctor":
+            doc_heap.append(offset)
+        else:
+            nrs_heap.append(offset)
+    heapq.heapify(doc_heap)
+    heapq.heapify(nrs_heap)
+
+    alloc_offsets = []
+    for patient in queue:
+        treat = patient["treatment_minutes"]
+        if patient["needs"] == "doctor":
+            if doc_heap:
+                t = heapq.heappop(doc_heap)
+                heapq.heappush(doc_heap, t + treat)
+                alloc_offsets.append(t)
+        else:
+            if nrs_heap:
+                t = heapq.heappop(nrs_heap)
+                heapq.heappush(nrs_heap, t + treat)
+                alloc_offsets.append(t)
+            elif doc_heap:
+                t = heapq.heappop(doc_heap)
+                heapq.heappush(doc_heap, t + treat)
+                alloc_offsets.append(t)
+
+    alloc_offsets.sort()
+    return alloc_offsets, (max(alloc_offsets) if alloc_offsets else 0)
+
+
+clearance_offsets, clearance_mins = _estimate_clearance(
+    waiting_queue, a_doctors, a_nurses, active_treatments, simulation_len
+)
+
+if waiting_queue:
+    print(f"\nQueue clearance estimate (no new arrivals):")
+    print(f"  Patients still waiting : {len(waiting_queue)}")
+    print(f"  Available doctors now  : {a_doctors}")
+    print(f"  Available nurses now   : {a_nurses}")
+    print(f"  Time to clear queue    : {clearance_mins:.0f} min  "
+          f"({clearance_mins/60:.1f} h after simulation end)")
+
+# ---------------------------------------------------------------------------
 # Matplotlib plot
 # ---------------------------------------------------------------------------
+
+_ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 
 ESI_COLORS = {1: "#d62728", 2: "#ff7f0e", 3: "#e8c000", 4: "#2ca02c", 5: "#1f77b4"}
 ESI_LABELS = {
@@ -429,11 +494,16 @@ ESI_LABELS = {
     5: "ESI 5 — Non-Urgent",
 }
 
-fig, ax = plt.subplots(figsize=(16, 7))
+fig, (ax, ax2) = plt.subplots(
+    2, 1, figsize=(16, 10), sharex=True,
+    gridspec_kw={"height_ratios": [3, 1], "hspace": 0.08},
+)
 fig.patch.set_facecolor("#f8f9fa")
 ax.set_facecolor("#f0f2f5")
+ax2.set_facecolor("#f0f2f5")
 
-# Scatter: routine patients (circle) and MCE patients (X)
+# --- Top subplot: wait time scatter ---
+
 for esi in range(1, 6):
     routine = [(p["arrival_min"], p["wait_time"]) for p in patient_log
                if p["esi"] == esi and not p["is_mce"]]
@@ -449,7 +519,6 @@ for esi in range(1, 6):
         ax.scatter(xs, ys, c=ESI_COLORS[esi], marker="X", s=130,
                    alpha=0.95, zorder=4, edgecolors="black", linewidths=0.6)
 
-# Rolling mean over a 5-patient window
 if len(patient_log) >= 5:
     pts_sorted = sorted(patient_log, key=lambda p: p["arrival_min"])
     arr_x = np.array([p["arrival_min"] for p in pts_sorted])
@@ -461,36 +530,121 @@ if len(patient_log) >= 5:
     ax.plot(roll_x, roll_y, color="black", linewidth=2.2, zorder=5,
             label=f"Rolling mean ({window}-pt window)")
 
-# MCE event vertical lines + labels
+mce_handle = ax.scatter([], [], c="grey", marker="X", s=130,
+                        edgecolors="black", linewidths=0.6, label="MCE casualty")
+handles, labels_leg = ax.get_legend_handles_labels()
+ax.legend(handles=handles, labels=labels_leg, loc="upper left", fontsize=9, framealpha=0.9)
+
+ax.set_ylabel("Patient wait time (minutes)", fontsize=12)
+ax.grid(True, alpha=0.35, linestyle="--")
+
+# --- Bottom subplot: queue length over time ---
+
+minutes_axis = np.arange(len(queue_length_over_time))
+ax2.fill_between(minutes_axis, queue_length_over_time,
+                 color="#4c72b0", alpha=0.35, zorder=2)
+ax2.plot(minutes_axis, queue_length_over_time,
+         color="#4c72b0", linewidth=1.5, zorder=3)
+ax2.set_ylabel("Patients waiting", fontsize=12)
+ax2.set_xlabel("Simulation time (minutes)", fontsize=12)
+ax2.grid(True, alpha=0.35, linestyle="--")
+ax2.set_ylim(bottom=0)
+
+# --- MCE vertical lines on both subplots ---
+
 y_top = ax.get_ylim()[1] if patient_log else 60
 for (t, name, n) in mce_events_log:
-    ax.axvline(x=t, color="#333333", linestyle="--", linewidth=1.4,
-               alpha=0.85, zorder=2)
+    for axis in (ax, ax2):
+        axis.axvline(x=t, color="#333333", linestyle="--", linewidth=1.4,
+                     alpha=0.85, zorder=2)
     ax.text(t + 0.4, y_top * 0.98,
             f"{name}\n({n} pts)",
             rotation=90, va="top", ha="left", fontsize=7.5,
             color="#111111",
             bbox=dict(boxstyle="round,pad=0.25", fc="white", ec="#aaaaaa", alpha=0.85))
 
-# Legend: add MCE-patient marker entry
-mce_handle = ax.scatter([], [], c="grey", marker="X", s=130,
-                        edgecolors="black", linewidths=0.6, label="MCE casualty")
-handles, labels_leg = ax.get_legend_handles_labels()
-ax.legend(handles=handles, labels=labels_leg,
-          loc="upper left", fontsize=9, framealpha=0.9)
+# --- Title and save ---
 
 mce_count = len(mce_events_log)
-ax.set_xlabel("Simulation time (minutes)", fontsize=13)
-ax.set_ylabel("Patient wait time (minutes)", fontsize=13)
 ax.set_title(
-    f"A&E Waiting Times  —  {hours}h simulation  |  "
-    f"{len(patient_log)} patients  |  {mce_count} mass casualty event{'s' if mce_count != 1 else ''}",
+    f"A&E Simulation  —  {hours}h  |  {len(patient_log)} patients  |  "
+    f"{mce_count} mass casualty event{'s' if mce_count != 1 else ''}",
     fontsize=13,
 )
-ax.grid(True, alpha=0.35, linestyle="--")
 ax.set_xlim(-1, simulation_len + 1)
 
-plt.tight_layout()
-plt.savefig("waiting_times.png", dpi=150, bbox_inches="tight")
-tqdm.write("\nPlot saved to waiting_times.png")
+timeline_path = f"sim_timeline_{_ts}.png"
+plt.savefig(timeline_path, dpi=150, bbox_inches="tight")
+tqdm.write(f"\nTimeline plot saved to {timeline_path}")
 plt.show()
+
+# ---------------------------------------------------------------------------
+# Analysis figure: waited-time distribution + queue clearance projection
+# ---------------------------------------------------------------------------
+
+if waiting_queue:
+    fig2, (ax3, ax4) = plt.subplots(1, 2, figsize=(14, 5))
+    fig2.patch.set_facecolor("#f8f9fa")
+    ax3.set_facecolor("#f0f2f5")
+    ax4.set_facecolor("#f0f2f5")
+
+    # --- Left: stacked histogram of time-already-waited by ESI ---
+    by_esi = {esi: [] for esi in range(1, 6)}
+    for p in waiting_queue:
+        by_esi[p["esi"]].append(simulation_len - p["arrival_min"])
+
+    esi_present = [e for e in range(1, 6) if by_esi[e]]
+    ax3.hist(
+        [by_esi[e] for e in esi_present],
+        bins=max(8, len(waiting_queue) // 3),
+        stacked=True,
+        color=[ESI_COLORS[e] for e in esi_present],
+        label=[ESI_LABELS[e] for e in esi_present],
+        edgecolor="white",
+        linewidth=0.5,
+    )
+    ax3.set_xlabel("Time already waited at simulation end (minutes)", fontsize=11)
+    ax3.set_ylabel("Number of patients", fontsize=11)
+    ax3.set_title(
+        f"Current wait-time distribution\n({len(waiting_queue)} patients still in queue)",
+        fontsize=11,
+    )
+    ax3.legend(fontsize=8, framealpha=0.9)
+    ax3.grid(True, alpha=0.3, linestyle="--", axis="y")
+
+    # --- Right: queue drain step chart ---
+    if clearance_offsets:
+        t_end = clearance_offsets[-1] * 1.08 + 1
+        t_range = np.linspace(0, t_end, 1000)
+        offsets_arr = np.array(clearance_offsets)
+        drain = [len(waiting_queue) - int(np.sum(offsets_arr <= t)) for t in t_range]
+
+        ax4.step(t_range, drain, where="post", color="#d62728", linewidth=2, zorder=3)
+        ax4.fill_between(t_range, drain, step="post", color="#d62728", alpha=0.25, zorder=2)
+        ax4.axvline(x=clearance_offsets[-1], color="#333333", linestyle="--", linewidth=1.4)
+        ax4.text(
+            clearance_offsets[-1] * 1.01, len(waiting_queue) * 0.5,
+            f"Cleared at\n+{clearance_mins:.0f} min\n({clearance_mins/60:.1f} h)",
+            fontsize=9, va="center",
+            bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="#aaaaaa", alpha=0.9),
+        )
+
+    ax4.set_xlabel("Minutes after simulation ends", fontsize=11)
+    ax4.set_ylabel("Patients still waiting", fontsize=11)
+    avail = f"{a_doctors} doctor{'s' if a_doctors != 1 else ''}, {a_nurses} nurse{'s' if a_nurses != 1 else ''} available"
+    ax4.set_title(f"Queue clearance projection\n({avail}, no new arrivals)", fontsize=11)
+    ax4.set_ylim(bottom=0)
+    ax4.grid(True, alpha=0.3, linestyle="--")
+
+    fig2.suptitle(
+        f"End-of-simulation queue analysis  —  {len(waiting_queue)} patients unserved",
+        fontsize=12, y=1.01,
+    )
+    fig2.tight_layout()
+
+    analysis_path = f"sim_analysis_{_ts}.png"
+    fig2.savefig(analysis_path, dpi=150, bbox_inches="tight")
+    tqdm.write(f"Analysis plot saved to {analysis_path}")
+    plt.show()
+else:
+    tqdm.write("\nNo patients left in queue — skipping analysis plot.")
