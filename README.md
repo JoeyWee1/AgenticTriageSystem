@@ -1,31 +1,45 @@
 # AgenticTriageSystem
 
-Dear Claude Code,
+A multi-agent simulation of an NHS A&E department, built for the Cambridge Infosys Hackathon. The system generates realistic patients, triages them through a 6-agent LLM pipeline, allocates staff, and tracks waiting times — including the impact of mass casualty events.
 
-finish main.py, generate_patient.py, and agentic.py to these specifications
+---
 
-- agentic.py should behave as written in multi agent hackathon.pdf
-- main.py is partially written. It simulates the world in which the agents live minute by minute
-- generate patient generates the patients that come in
-- us langchain
+## Architecture
 
--in main, a poisson dist decides how many patients come in that minute
--in a loop during each minute that runs as many times as there are patients that minute,
-    -generate a patient using generate_patient
-    -generate_patient uses the data written inside as a comment to generate a patient background
-    -draw a human from those parameters
-    - 85% of the time draw a general ailment from the json
-    - the remaining 15% of the time draw a major ailment
-    - look up the ailment symtoms and add noise to them:
-        - 30% of the time remove a symptom or add a symptom or add/remove the a symptom using the symptoms in the csv
-    - use an agent to create a patient of the background created describing their symptoms
-    - feed this data into the agentic system along with the list of other presently waiting patients and their associeted summary strings and severity index numbers
-    - the agentic system returns a new list adding that patient in the correct order as a tuple of (severity index, string)
-    - keep track of the ailment behind the scenes
-    - allocate them to a doctor or nurse based on existing resources
-    - a doctor can replace a nurse but a nurse cannot replace a doctor
-    - track the overall waiting time of each patient in an array as the output of the simulation
-- print a summary of the distribution of wait times for the patients
+### Patient Generation (`generate_patient.py`)
+
+Each patient is drawn from realistic population statistics for Charing Cross Hospital:
+
+- Demographics sampled from ethnicity-weighted distributions (age 16–96, gender, medical history, arrival mode, vitals)
+- **85%** of patients present with a general ailment; **15%** with a major incident ailment
+- Symptom noise applied with 30% probability: a symptom is randomly added, removed, or swapped using the symptoms catalogue
+- GPT-4o-mini writes a natural first-person description of how the patient feels
+
+### Triage Pipeline (`agentic.py`)
+
+Each patient passes through six agents in sequence, backed by GPT-4o-mini via LangChain:
+
+| # | Agent | Input | Output |
+|---|---|---|---|
+| 1 | **Severity** | Patient description + current queue | ESI score (1–5), clinical summary, doctor/nurse needed, language warning |
+| 2 | **Time Estimation** | ESI + condition | Estimated treatment time (minutes) |
+| 3 | **Capacity** | Live staff counts + queue length | BOR, SOR, buffer variance, flow status |
+| 4 | **Triage** | ESI + capacity data | Track (Severe / Non-Severe / Referral), action plan |
+| 5 | **Summary** | All of the above | Nurse report + patient-facing report |
+| 6 | **Review** | All of the above | Confidence score 1–3, one-sentence rationale |
+
+If the Review Agent scores below 3, the pipeline loops back and retries (max 2 retries). If confidence is still below 3 after retries, the case is escalated for human judgement.
+
+The Capacity Agent uses live simulation state (available doctors, nurses, queue length) passed directly from the environment each minute.
+
+### Simulation Loop (`main.py`)
+
+- Runs minute by minute for a configurable number of hours
+- Patient arrivals follow a Poisson process (mean 0.3/min)
+- Staff are allocated from the front of the priority queue (ESI 1 first)
+- Doctors can cover nurse-level cases; nurses cannot cover doctor-level cases
+- Treatment durations are drawn from ailment data; staff become available again when treatment ends
+- At the end, a `waiting_times.png` plot is produced showing wait time per patient over time, coloured by ESI, with mass casualty events marked
 
 ---
 
@@ -70,18 +84,61 @@ export OPENAI_API_KEY="sk-..."
 python main.py
 ```
 
-The simulation runs for 1 hour (60 minutes) of simulated A&E time. Each arriving patient passes through the full 6-agent triage pipeline (Severity → Time Estimation → Capacity → Triage → Summary → Review) before being placed in the priority queue and allocated to available staff.
+Each patient requires ~6 LLM calls. Expected wall-clock runtime scales with total patient count (routine + MCE casualties).
 
-Expected runtime: roughly 1–3 minutes depending on how many patients arrive (Poisson mean = 0.3/min ≈ 18 patients, each requiring ~6 LLM calls).
+---
 
-### 6. Adjusting the simulation
+## Mass Casualty Events (MCE)
 
-Edit the top of `main.py` to change:
+Mass casualty events fire randomly in the background at an average rate of one per 240 simulated minutes (Poisson process). When an event fires, a batch of casualties arrives simultaneously — all drawn from major incident ailments — and each passes through the full 6-agent triage pipeline.
+
+### Forcing events at specific minutes
+
+```bash
+# Random event type at minute 30
+python main.py --mce 30
+
+# Specific event type (exact or partial name, case-insensitive)
+python main.py --mce 30 "Public Bomb"
+python main.py --mce 30 bomb
+
+# Multiple forced events
+python main.py --mce 10 Earthquake --mce 90 "Large Fire"
+
+# Disable background random MCEs (only forced events fire)
+python main.py --no-random-mce
+python main.py --no-random-mce --mce 30 Earthquake
+```
+
+Forced events are merged with any randomly scheduled events. If a forced minute collides with a random one, the forced event takes priority.
+
+Run `python main.py --help` for a full reference.
+
+### Available event types
+
+| Event | Casualties |
+|---|---|
+| Mass Shooting | 5–15 |
+| Train Derailment | 10–30 |
+| Earthquake | 15–40 |
+| Tornado | 5–20 |
+| Tsunami | 10–25 |
+| Building Collapse | 8–25 |
+| Large Fire | 5–20 |
+| Public Bomb | 20–50 |
+| Chemical Plant Blast | 8–20 |
+| Stadium Stampede | 15–40 |
+
+---
+
+## Configuration
+
+Edit the top of `main.py` to change simulation parameters:
 
 | Variable | Default | Effect |
 |---|---|---|
-| `hours` | `1` | Length of simulation |
-| `patients_per_min` mu | `0.3` | Patient arrival rate |
+| `hours` | `2` | Length of simulation |
+| `patients_per_min` mu | `0.3` | Routine patient arrival rate (per minute) |
 | `tot_doctors` | `5` | Total doctor headcount |
 | `tot_nurses` | `10` | Total nurse headcount |
 

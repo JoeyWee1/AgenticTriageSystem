@@ -1,3 +1,4 @@
+import argparse
 import random
 import numpy as np
 import matplotlib.pyplot as plt
@@ -8,10 +9,122 @@ from generate_patient import gen_patient
 from agentic import agentic_decision
 
 # ---------------------------------------------------------------------------
+# Mass Casualty Event definitions  (defined early so argparse can list them)
+# ---------------------------------------------------------------------------
+
+MCE_TYPES = [
+    {
+        "name": "Mass Shooting", "min_pts": 5, "max_pts": 15,
+        "ailments": {
+            "Ballistic injury (gunshot)":       5,
+            "Vascular trauma":                  2,
+            "Thoracic trauma":                  2,
+            "Abdominal trauma":                 2,
+            "Traumatic brain injury (TBI)":     1,
+        },
+    },
+    {
+        "name": "Train Derailment", "min_pts": 10, "max_pts": 30,
+        "ailments": {
+            "Crush injury and crush syndrome":  3,
+            "Pelvic and long bone injuries":    3,
+            "Traumatic brain injury (TBI)":     3,
+            "Thoracic trauma":                  2,
+            "Abdominal trauma":                 1,
+            "Vascular trauma":                  1,
+        },
+    },
+    {
+        "name": "Earthquake", "min_pts": 15, "max_pts": 40,
+        "ailments": {
+            "Crush injury and crush syndrome":  4,
+            "Pelvic and long bone injuries":    3,
+            "Traumatic brain injury (TBI)":     2,
+            "Thoracic trauma":                  1,
+            "Burn injury":                      1,
+        },
+    },
+    {
+        "name": "Tornado", "min_pts": 5, "max_pts": 20,
+        "ailments": {
+            "Traumatic brain injury (TBI)":     3,
+            "Pelvic and long bone injuries":    3,
+            "Vascular trauma":                  2,
+            "Thoracic trauma":                  1,
+            "Blast injury":                     1,
+        },
+    },
+    {
+        "name": "Tsunami", "min_pts": 10, "max_pts": 25,
+        "ailments": {
+            "Traumatic brain injury (TBI)":     3,
+            "Thoracic trauma":                  3,
+            "Crush injury and crush syndrome":  2,
+            "Pelvic and long bone injuries":    2,
+            "Abdominal trauma":                 1,
+        },
+    },
+    {
+        "name": "Building Collapse", "min_pts": 8, "max_pts": 25,
+        "ailments": {
+            "Crush injury and crush syndrome":  5,
+            "Pelvic and long bone injuries":    4,
+            "Traumatic brain injury (TBI)":     3,
+            "Thoracic trauma":                  2,
+            "Abdominal trauma":                 1,
+            "Vascular trauma":                  1,
+        },
+    },
+    {
+        "name": "Large Fire", "min_pts": 5, "max_pts": 20,
+        "ailments": {
+            "Burn injury":                      5,
+            "Primary blast lung injury (PBLI)": 3,
+            "Acute acoustic trauma (AAT)":      1,
+        },
+    },
+    {
+        "name": "Public Bomb", "min_pts": 20, "max_pts": 50,
+        "ailments": {
+            "Blast injury":                     4,
+            "Primary blast lung injury (PBLI)": 3,
+            "Ballistic injury (gunshot)":       2,
+            "Burn injury":                      2,
+            "Acute acoustic trauma (AAT)":      2,
+            "Traumatic brain injury (TBI)":     2,
+            "Vascular trauma":                  1,
+        },
+    },
+    {
+        "name": "Chemical Plant Blast", "min_pts": 8, "max_pts": 20,
+        "ailments": {
+            "CBRN nerve agent exposure":        3,
+            "Blast injury":                     3,
+            "Burn injury":                      2,
+            "Primary blast lung injury (PBLI)": 2,
+            "Acute acoustic trauma (AAT)":      1,
+        },
+    },
+    {
+        "name": "Stadium Stampede", "min_pts": 15, "max_pts": 40,
+        "ailments": {
+            "Crush injury and crush syndrome":  5,
+            "Pelvic and long bone injuries":    4,
+            "Traumatic brain injury (TBI)":     2,
+            "Thoracic trauma":                  2,
+            "Abdominal trauma":                 1,
+        },
+    },
+]
+
+_MCE_NAMES = [e["name"] for e in MCE_TYPES]
+_MCE_BY_NAME = {e["name"].lower(): e for e in MCE_TYPES}
+
+# ---------------------------------------------------------------------------
 # Simulation parameters
 # ---------------------------------------------------------------------------
 
-hours = 1
+hours = 2
 simulation_len = hours * 60  # minutes
 patients_per_min = poisson.rvs(mu=0.3, size=simulation_len)
 
@@ -19,30 +132,94 @@ tot_doctors = 5
 tot_nurses = 10
 
 # ---------------------------------------------------------------------------
-# Mass Casualty Event definitions
+# CLI — force MCE events at specific minutes
 # ---------------------------------------------------------------------------
 
-MCE_TYPES = [
-    {"name": "Mass Shooting",        "min_pts": 5,  "max_pts": 15},
-    {"name": "Train Derailment",     "min_pts": 10, "max_pts": 30},
-    {"name": "Earthquake",           "min_pts": 15, "max_pts": 40},
-    {"name": "Tornado",              "min_pts": 5,  "max_pts": 20},
-    {"name": "Tsunami",              "min_pts": 10, "max_pts": 25},
-    {"name": "Building Collapse",    "min_pts": 8,  "max_pts": 25},
-    {"name": "Large Fire",           "min_pts": 5,  "max_pts": 20},
-    {"name": "Godzilla Attack",      "min_pts": 20, "max_pts": 50},
-    {"name": "Chemical Plant Blast", "min_pts": 8,  "max_pts": 20},
-    {"name": "Stadium Stampede",     "min_pts": 15, "max_pts": 40},
-]
+parser = argparse.ArgumentParser(
+    description="A&E Agentic Triage Simulation",
+    formatter_class=argparse.RawDescriptionHelpFormatter,
+    epilog=(
+        "Examples:\n"
+        "  python main.py --mce 30\n"
+        "  python main.py --mce 30 'Godzilla Attack'\n"
+        "  python main.py --mce 10 Earthquake --mce 45 'Large Fire'\n\n"
+        "Available event types:\n"
+        + "\n".join(f"  {e['name']} ({e['min_pts']}–{e['max_pts']} casualties)" for e in MCE_TYPES)
+    ),
+)
+parser.add_argument(
+    "--mce",
+    nargs="+",
+    action="append",
+    metavar=("MINUTE", "EVENT"),
+    help=(
+        "Force an MCE at MINUTE (0 to %(max)d). "
+        "Optionally name the event type (default: random). "
+        "Repeatable." % {"max": simulation_len - 1}
+    ),
+)
+parser.add_argument(
+    "--no-random-mce",
+    action="store_true",
+    help="Disable background random MCE events. Forced --mce events still fire.",
+)
+args = parser.parse_args()
 
-# Pre-generate MCE schedule: Poisson mean = 1 event per 240 min
-n_mce = poisson.rvs(mu=simulation_len / 240)
-mce_minutes = sorted(random.sample(range(simulation_len), min(n_mce, simulation_len)))
+forced_events = []
+if args.mce:
+    for tokens in args.mce:
+        minute_str = tokens[0]
+        event_name_raw = " ".join(tokens[1:]) if len(tokens) > 1 else None
+
+        try:
+            minute = int(minute_str)
+        except ValueError:
+            parser.error(f"MCE minute must be an integer, got: {minute_str!r}")
+
+        if not (0 <= minute < simulation_len):
+            parser.error(f"MCE minute {minute} is out of range (0–{simulation_len - 1})")
+
+        if event_name_raw:
+            matched = _MCE_BY_NAME.get(event_name_raw.lower())
+            if matched is None:
+                # Try partial match
+                matches = [e for e in MCE_TYPES if event_name_raw.lower() in e["name"].lower()]
+                if len(matches) == 1:
+                    matched = matches[0]
+                elif len(matches) > 1:
+                    parser.error(
+                        f"Ambiguous event name {event_name_raw!r}. Matches: "
+                        + ", ".join(m["name"] for m in matches)
+                    )
+                else:
+                    parser.error(
+                        f"Unknown event type {event_name_raw!r}.\n"
+                        "Available: " + ", ".join(_MCE_NAMES)
+                    )
+            event = matched
+        else:
+            event = random.choice(MCE_TYPES)
+
+        n_pts = random.randint(event["min_pts"], event["max_pts"])
+        forced_events.append((minute, event["name"], n_pts, event["ailments"]))
+
+# ---------------------------------------------------------------------------
+# Build MCE schedule: random background events + forced events
+# ---------------------------------------------------------------------------
+
+# Pre-generate random background MCE schedule (Poisson mean = 1 per 240 min)
 mce_schedule = {}
-for t in mce_minutes:
-    event = random.choice(MCE_TYPES)
-    n_pts = random.randint(event["min_pts"], event["max_pts"])
-    mce_schedule[t] = (event["name"], n_pts)
+if not args.no_random_mce:
+    n_mce = poisson.rvs(mu=simulation_len / 240)
+    mce_minutes = sorted(random.sample(range(simulation_len), min(n_mce, simulation_len)))
+    for t in mce_minutes:
+        event = random.choice(MCE_TYPES)
+        n_pts = random.randint(event["min_pts"], event["max_pts"])
+        mce_schedule[t] = (event["name"], n_pts, event["ailments"])
+
+# Merge forced events (override any random event at the same minute)
+for (minute, name, n_pts, ailments) in forced_events:
+    mce_schedule[minute] = (name, n_pts, ailments)
 
 # ---------------------------------------------------------------------------
 # Simulation state
@@ -52,7 +229,7 @@ values, counts = np.unique(patients_per_min, return_counts=True)
 print("Patient arrival distribution:", values, counts)
 print(f"Total routine patients expected: {patients_per_min.sum()}")
 print(f"MCE events scheduled: {len(mce_schedule)}")
-for t, (name, n) in sorted(mce_schedule.items()):
+for t, (name, n, _) in sorted(mce_schedule.items()):
     print(f"  Min {t:4d}: {name} ({n} casualties)")
 print()
 
@@ -86,7 +263,7 @@ for current_min, patients_this_min in tqdm(
 
     # --- Mass casualty event ---
     if current_min in mce_schedule:
-        event_name, n_mce_pts = mce_schedule[current_min]
+        event_name, n_mce_pts, mce_ailments = mce_schedule[current_min]
         tqdm.write(
             f"\n{'!'*60}\n"
             f"  MASS CASUALTY EVENT at min {current_min}: {event_name}\n"
@@ -96,7 +273,7 @@ for current_min, patients_this_min in tqdm(
         mce_events_log.append((current_min, event_name, n_mce_pts))
 
         for _ in range(n_mce_pts):
-            patient_prompt, ailment = gen_patient(major_only=True)
+            patient_prompt, ailment = gen_patient(ailment_pool=mce_ailments)
             tqdm.write(f"\n[Min {current_min}] MCE casualty — {ailment['ailment']}")
 
             old_descs = {t[1] for t in current_order}
