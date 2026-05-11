@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"from langchain_anthropic import ChatAnthropic; print\\('langchain_anthropic ok'\\)\")",
+      "Bash(pip install *)",
+      "Bash(python -c ' *)",
+      "Bash(python -c \"import os; print\\('API key set:', bool\\(os.environ.get\\('ANTHROPIC_API_KEY'\\)\\)\\)\")",
+      "Bash(pip show *)",
+      "Bash(python *)"
+    ]
+  }
+}
